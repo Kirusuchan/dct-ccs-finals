@@ -108,4 +108,11 @@ function displayErrors($errors) {
     $html .= '</div>';
     return $html;
 }
+
+function checkUserSessionIsActive() {
+    if (isset($_SESSION['email']) && !empty($_SESSION['email'])) {
+        header("Location: admin/dashboard.php");
+        exit;
+    }
+}
 ?>
