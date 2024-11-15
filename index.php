@@ -1,5 +1,6 @@
 <?php
 require_once 'functions.php';
+checkUserSessionIsActive();
 
 $error_message = ''; // Initialize the error message variable
 
