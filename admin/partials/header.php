@@ -2,7 +2,8 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require_once '../functions.php';
+require_once($_SERVER['DOCUMENT_ROOT'] . '/functions.php');
+
 
 // Define a default title if none is provided
 $title = isset($title) ? $title : "Default Title";
