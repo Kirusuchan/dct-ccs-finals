@@ -150,10 +150,10 @@ if (isset($_GET['id'])) {
                             <td><?php echo htmlspecialchars($row['subject_name']); ?></td>
                             <td><?php echo $row['grade'] > 0 ? number_format($row['grade'], 2) : '--.--'; ?></td>
                             <td>
-                                <form method="post" action="detach-subject.php" style="display:inline-block;">
-                                    <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-                                    <button type="submit" class="btn btn-danger btn-sm">Detach</button>
-                                </form>
+                            <form method="get" action="dettach-subject.php" style="display:inline-block;">
+                                <input type="hidden" name="id" value="<?php echo $row['id']; ?>"> <!-- Use the 'id' from students_subjects -->
+                                <button type="submit" class="btn btn-danger btn-sm">Detach</button>
+                            </form>
                                 <form method="post" action="assign-grade.php" style="display:inline-block;">
                                     <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
                                     <button type="submit" class="btn btn-success btn-sm">Assign Grade</button>
