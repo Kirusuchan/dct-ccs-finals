@@ -67,17 +67,27 @@ function logout_user() {
 
 
 // Reusable Function for Dismissible Alert Messages
-function renderAlert($message, $type = 'danger') {
-    if (empty($message)) {
+function renderAlert($messages, $type = 'danger') {
+    if (empty($messages)) {
         return '';
     }
-    return '
-        <div class="alert alert-' . $type . ' alert-dismissible fade show" role="alert">
-            ' . htmlspecialchars($message) . '
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    ';
+    // Ensure messages is an array
+    if (!is_array($messages)) {
+        $messages = [$messages];
+    }
+
+    $html = '<div class="alert alert-' . $type . ' alert-dismissible fade show" role="alert">';
+    $html .= '<ul>';
+    foreach ($messages as $message) {
+        $html .= '<li>' . htmlspecialchars($message) . '</li>';
+    }
+    $html .= '</ul>';
+    $html .= '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+    $html .= '</div>';
+
+    return $html;
 }
+
 
 // Validate Email and Password Inputs
 function validateLoginCredentials($email, $password) {
@@ -151,6 +161,62 @@ function checkDuplicateSubjectData($subject_data) {
     }
 
     return ''; // No duplicate found
+}
+
+// Validate student data
+function validateStudentData($student_data) {
+    $errors = [];
+    if (empty($student_data['student_id'])) {
+        $errors[] = "Student ID is required.";
+    }
+    if (empty($student_data['first_name'])) {
+        $errors[] = "First Name is required.";
+    }
+    if (empty($student_data['last_name'])) {
+        $errors[] = "Last Name is required.";
+    }
+
+    // Removed the var_dump debug
+    return $errors;
+}
+
+// Check for duplicate student data in the database
+function checkDuplicateStudentData($student_data) {
+    $connection = db_connect();
+    $query = "SELECT * FROM students WHERE student_id = ?";
+    $stmt = $connection->prepare($query);
+    $stmt->bind_param('s', $student_data['student_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        return "Student ID already exists.";
+    }
+
+    // Removed the var_dump debug
+    return '';
+}
+
+
+// Function to generate unique ID for students
+function generateUniqueIdForStudents() {
+    $connection = db_connect();
+
+    // Find the maximum current ID and add 1 to it
+    $query = "SELECT MAX(id) AS max_id FROM students";
+    $result = $connection->query($query);
+    $row = $result->fetch_assoc();
+    $max_id = $row['max_id'];
+
+    $connection->close();
+
+    return $max_id + 1; // Generate the next unique ID
+}
+
+// Generate a valid 4-character student_id
+function generateValidStudentId($original_id) {
+    // Truncate to the first 4 characters
+    return substr($original_id, 0, 4);
 }
 
 ?>
