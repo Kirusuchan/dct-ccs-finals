@@ -38,21 +38,35 @@ if (!$subject) {
     // Handle the update request
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_subject'])) {
         $subject_name = trim($_POST['subject_name']);
+        $subject_code = trim($_POST['subject_code']); // Fetch subject_code
 
         // Validate input
         if (empty($subject_name)) {
             $error_message = "Subject name cannot be empty.";
+        } elseif (empty($subject_code)) {
+            $error_message = "Subject code cannot be empty.";
         } else {
-            // Update the subject
-            $update_query = "UPDATE subjects SET subject_name = ? WHERE id = ?";
-            $update_stmt = $connection->prepare($update_query);
-            $update_stmt->bind_param('si', $subject_name, $subject_id);
+            // Check for duplicate subject name or code
+            $duplicate_query = "SELECT * FROM subjects WHERE (subject_name = ? OR subject_code = ?) AND id != ?";
+            $duplicate_stmt = $connection->prepare($duplicate_query);
+            $duplicate_stmt->bind_param('ssi', $subject_name, $subject_code, $subject_id);
+            $duplicate_stmt->execute();
+            $duplicate_result = $duplicate_stmt->get_result();
 
-            if ($update_stmt->execute()) {
-                header("Location: /admin/subject/add.php?message=Subject+updated+successfully");
-                exit(); // Redirect back to the add page after success
+            if ($duplicate_result->num_rows > 0) {
+                $error_message = "A subject with the same name or code already exists.";
             } else {
-                $error_message = "Failed to update the subject. Please try again.";
+                // Update the subject
+                $update_query = "UPDATE subjects SET subject_name = ?, subject_code = ? WHERE id = ?";
+                $update_stmt = $connection->prepare($update_query);
+                $update_stmt->bind_param('ssi', $subject_name, $subject_code, $subject_id);
+
+                if ($update_stmt->execute()) {
+                    header("Location: /admin/subject/add.php?message=Subject+updated+successfully");
+                    exit(); // Redirect back to the add page after success
+                } else {
+                    $error_message = "Failed to update the subject. Please try again.";
+                }
             }
         }
     }
@@ -82,8 +96,8 @@ if (!$subject) {
             <div class="card-body">
                 <form method="post">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="subject_id" name="subject_id" placeholder="Subject ID" value="<?php echo htmlspecialchars($subject['id']); ?>" readonly>
-                        <label for="subject_id">Subject ID</label>
+                        <input type="text" class="form-control" id="subject_code" name="subject_code" placeholder="Subject Code" value="<?php echo htmlspecialchars($subject['subject_code']); ?>" readonly>
+                        <label for="subject_code">Subject Code</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="subject_name" name="subject_name" placeholder="Subject Name" value="<?php echo htmlspecialchars($subject['subject_name']); ?>">
