@@ -26,10 +26,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_subject'])) {
     }
 
     if (empty($errors)) {
-        // Check for duplicates
-        $duplicate_error = checkDuplicateSubjectData(['subject_code' => $subject_code]);
-        if (!empty($duplicate_error)) {
-            $error_message = renderAlert([$duplicate_error], 'danger'); // If duplicate exists, set error message
+        // Check for duplicate subject code
+        $duplicate_code_error = checkDuplicateSubjectData(['subject_code' => $subject_code]);
+        // Check for duplicate subject name
+        $duplicate_name_error = checkDuplicateSubjectName($subject_name);
+
+        if (!empty($duplicate_code_error) || !empty($duplicate_name_error)) {
+            $error_message = renderAlert(
+                array_filter([$duplicate_code_error, $duplicate_name_error]), 
+                'danger'
+            );
         } else {
             // Insert new subject into the database
             $connection = db_connect();
@@ -50,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_subject'])) {
         $error_message = renderAlert($errors, 'danger');
     }
 }
+
 // Fetch subjects to display in the list
 $connection = db_connect();
 $query = "SELECT * FROM subjects";

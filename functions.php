@@ -173,6 +173,23 @@ function checkDuplicateSubjectData($subject_data) {
     return ''; // No duplicate found
 }
 
+// Function to check for duplicate subject name in the database
+function checkDuplicateSubjectName($subject_name) {
+    $connection = db_connect();
+    $query = "SELECT * FROM subjects WHERE subject_name = ?";
+    $stmt = $connection->prepare($query);
+    $stmt->bind_param('s', $subject_name);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        return "Subject name already exists. Please choose another."; // Return the error message for duplicates
+    }
+
+    return ''; // No duplicate found
+}
+
+
 // Validate student data
 function validateStudentData($student_data) {
     $errors = [];
