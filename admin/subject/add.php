@@ -66,6 +66,13 @@ $result = $connection->query($query);
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-5">
     <h1 class="h2">Add a New Subject</h1>
 
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="../dashboard.php">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Add a New Subject</li>
+        </ol>
+    </nav>
+
     <!-- Display messages -->
     <?php if (!empty($error_message)): ?>
         <?php echo $error_message; ?>
