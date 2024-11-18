@@ -91,9 +91,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label for="last_name" class="form-label">Last Name</label>
             <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name" value="<?php echo htmlspecialchars($_POST['last_name'] ?? ''); ?>">
         </div>
-
-        <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg">Add Student</button>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary w-100">Add Student</button>
         </div>
     </form>
 
