@@ -1,4 +1,5 @@
 <?php 
+$title = "Dashboard"; // Set the title
 require_once '../admin/partials/header.php'; 
 require_once '../admin/partials/side-bar.php';
 

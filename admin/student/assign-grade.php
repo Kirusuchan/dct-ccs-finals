@@ -1,5 +1,6 @@
 <?php
 ob_start(); // Start output buffering
+$title = "Assign Grade"; // Set the title
 require_once '../partials/header.php';
 require_once '../partials/side-bar.php';
 guard(); // Ensure the user is authenticated

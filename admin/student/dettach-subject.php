@@ -1,5 +1,6 @@
 <?php
 ob_start(); // Start output buffering
+$title = "Detach a Subject"; // Set the title
 require_once '../partials/header.php';
 require_once '../partials/side-bar.php';
 guard(); // Ensure the user is authenticated

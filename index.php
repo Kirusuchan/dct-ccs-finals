@@ -1,4 +1,5 @@
 <?php
+$title = "Login"; // Set the title
 require_once 'functions.php';
 checkUserSessionIsActive();
 
