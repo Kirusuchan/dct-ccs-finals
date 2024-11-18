@@ -1,3 +1,4 @@
+<?php guard(); ?>
 <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary vh-100">
     <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
         <div class="offcanvas-header">
