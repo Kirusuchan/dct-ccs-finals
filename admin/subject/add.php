@@ -15,16 +15,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_subject'])) {
     $subject_name = trim($_POST['subject_name']);
 
     // Validate inputs
-    if (empty($subject_code) || empty($subject_name)) {
-        $error_message = "Both fields are required.";
+    $errors = [];
+    if (empty($subject_code)) {
+        $errors[] = "Subject Code is required.";
     } elseif (strlen($subject_code) > 4) {
-        // Check if subject code is too long
-        $error_message = "Subject Code cannot be longer than 4 characters.";
-    } else {
+        $errors[] = "Subject Code cannot be longer than 4 characters.";
+    }
+    if (empty($subject_name)) {
+        $errors[] = "Subject Name is required.";
+    }
+
+    if (empty($errors)) {
         // Check for duplicates
         $duplicate_error = checkDuplicateSubjectData(['subject_code' => $subject_code]);
         if (!empty($duplicate_error)) {
-            $error_message = $duplicate_error; // If duplicate exists, set error message
+            $error_message = renderAlert([$duplicate_error], 'danger'); // If duplicate exists, set error message
         } else {
             // Insert new subject into the database
             $connection = db_connect();
@@ -33,14 +38,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_subject'])) {
             $stmt->bind_param('ss', $subject_code, $subject_name);
 
             if ($stmt->execute()) {
-                $success_message = "Subject added successfully!";
+                $success_message = renderAlert(["Subject added successfully!"], 'success');
                 // Clear the fields after successful submission
                 $subject_code = '';
                 $subject_name = '';
             } else {
-                $error_message = "Error adding subject. Please try again.";
+                $error_message = renderAlert(["Error adding subject. Please try again."], 'danger');
             }
         }
+    } else {
+        $error_message = renderAlert($errors, 'danger');
     }
 }
 // Fetch subjects to display in the list
@@ -54,15 +61,11 @@ $result = $connection->query($query);
 
     <!-- Display messages -->
     <?php if (!empty($error_message)): ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <?php echo htmlspecialchars($error_message); ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    <?php elseif (!empty($success_message)): ?>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <?php echo htmlspecialchars($success_message); ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+        <?php echo $error_message; ?>
+    <?php endif; ?>
+
+    <?php if (!empty($success_message)): ?>
+        <?php echo $success_message; ?>
     <?php endif; ?>
 
     <!-- Add Subject Form -->
