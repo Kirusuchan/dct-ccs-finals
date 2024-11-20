@@ -43,8 +43,6 @@ if (!$subject) {
         // Validate input
         if (empty($subject_name)) {
             $error_message = "Subject name cannot be empty.";
-        } elseif (empty($subject_code)) {
-            $error_message = "Subject code cannot be empty.";
         } else {
             // Check for duplicate subject name or code
             $duplicate_query = "SELECT * FROM subjects WHERE (subject_name = ? OR subject_code = ?) AND id != ?";
