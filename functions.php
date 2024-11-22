@@ -8,7 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
 function db_connect() {
     $host = 'localhost';
     $user = 'root';
-    $password = 'dct-ccs-finals'; // Default for Laragon
+    $password = ''; // Default for Laragon
     $database = 'dct-ccs-finals';
 
     $connection = new mysqli($host, $user, $password, $database);
